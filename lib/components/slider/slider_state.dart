@@ -10,17 +10,13 @@ class SliderState extends State<Slider> {
     if (event.scrollDelta.dx < 0) {
       axisDirection = AxisDirection.left;
       if (index <= 0) return;
-      return setState(() {
-        index -= 1;
-      });
+      return setState(() => index -= 1);
     }
 
     if (event.scrollDelta.dx > 0) {
       axisDirection = AxisDirection.right;
       if (index >= widget.slides.length - 1) return;
-      return setState(() {
-        index += 1;
-      });
+      return setState(() => index += 1);
     }
   }
 
@@ -29,12 +25,11 @@ class SliderState extends State<Slider> {
     // https://stackoverflow.com/questions/64985580/flutter-web-gesturedetector-detect-mouse-wheel-events
     return Listener(
       onPointerSignal: (event) {
-        if (event is PointerScrollEvent) {
-          if (isScrolling) return;
-          isScrolling = true;
-          onPointerSignal(event);
-          return;
-        }
+        if (event is! PointerScrollEvent) return;
+        if (isScrolling) return;
+        isScrolling = true;
+        onPointerSignal(event);
+        return;
       },
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
