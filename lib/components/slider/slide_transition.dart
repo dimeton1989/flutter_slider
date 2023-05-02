@@ -12,6 +12,12 @@ class SlideTransition extends AnimatedWidget {
     required this.child,
   });
 
+  double get distance {
+    final animation = listenable as Animation<double>;
+    if (animation.status == AnimationStatus.reverse) return animation.value - 1;
+    return 1 - animation.value;
+  }
+
   // https://blog.logrocket.com/understanding-offsets-flutter/#:~:text=What%20are%20Offsets%3F,be%20interpreted%20as%20a%20vector.
   double get direction {
     switch (axisDirection) {
@@ -31,10 +37,6 @@ class SlideTransition extends AnimatedWidget {
   @override
   Widget build(Object context) {
     final animation = listenable as Animation<double>;
-    var distance = 1 - animation.value;
-    if (animation.status == AnimationStatus.reverse) {
-      distance = -distance;
-    }
     return FadeTransition(
       opacity: animation,
       child: FractionalTranslation(
