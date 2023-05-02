@@ -3,6 +3,7 @@ part of slider;
 class SliderState extends State<Slider> {
   int index = 0;
   AxisDirection direction = AxisDirection.right;
+  bool isPlaying = false;
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +12,10 @@ class SliderState extends State<Slider> {
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
           transitionBuilder: (Widget child, Animation<double> listenable) {
+            listenable.addStatusListener((status) {
+              if (status == AnimationStatus.completed) isPlaying = false;
+              if (status == AnimationStatus.dismissed) isPlaying = false;
+            });
             return SlideTransition(
               direction: direction,
               listenable: listenable,
@@ -29,20 +34,26 @@ class SliderState extends State<Slider> {
             Visibility(
               visible: index > 0,
               child: ElevatedButton(
-                onPressed: () => setState(() {
-                  direction = AxisDirection.left;
-                  index += -1;
-                }),
+                onPressed: () => isPlaying
+                    ? null
+                    : setState(() {
+                        direction = AxisDirection.left;
+                        index += -1;
+                        isPlaying = true;
+                      }),
                 child: const Text('上一頁'),
               ),
             ),
             Visibility(
               visible: index < widget.slides.length - 1,
               child: ElevatedButton(
-                onPressed: () => setState(() {
-                  direction = AxisDirection.right;
-                  index += 1;
-                }),
+                onPressed: () => isPlaying
+                    ? null
+                    : setState(() {
+                        direction = AxisDirection.right;
+                        index += 1;
+                        isPlaying = true;
+                      }),
                 child: const Text('下一頁'),
               ),
             ),
