@@ -7,13 +7,17 @@ class SliderState extends State<Slider> {
   Timer? timer;
 
   onPointerSignal(event) {
+    if (isScrolling) return;
+    if (event.scrollDelta.dx == 0) return;
     if (event.scrollDelta.dx < 0) {
+      isScrolling = true;
       axisDirection = AxisDirection.left;
       if (index <= 0) return;
       return setState(() => index -= 1);
     }
 
     if (event.scrollDelta.dx > 0) {
+      isScrolling = true;
       axisDirection = AxisDirection.right;
       if (index >= widget.slides.length - 1) return;
       return setState(() => index += 1);
@@ -26,8 +30,6 @@ class SliderState extends State<Slider> {
     return Listener(
       onPointerSignal: (event) {
         if (event is! PointerScrollEvent) return;
-        if (isScrolling) return;
-        isScrolling = true;
         onPointerSignal(event);
         return;
       },
