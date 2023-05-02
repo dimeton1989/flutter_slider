@@ -3,18 +3,18 @@ part of slider;
 class SlideTransition extends AnimatedWidget {
   final Widget child;
 
-  final AxisDirection direction;
+  final AxisDirection axisDirection;
 
   const SlideTransition({
     super.key,
-    this.direction = AxisDirection.left,
+    this.axisDirection = AxisDirection.left,
     required super.listenable,
     required this.child,
   });
 
   // https://blog.logrocket.com/understanding-offsets-flutter/#:~:text=What%20are%20Offsets%3F,be%20interpreted%20as%20a%20vector.
-  double get offsetDirection {
-    switch (direction) {
+  double get direction {
+    switch (axisDirection) {
       case AxisDirection.right:
         return 0 * pi / 180;
       case AxisDirection.up:
@@ -38,7 +38,7 @@ class SlideTransition extends AnimatedWidget {
     return FadeTransition(
       opacity: animation,
       child: FractionalTranslation(
-        translation: Offset.fromDirection(offsetDirection, distance),
+        translation: Offset.fromDirection(direction, distance),
         child: child,
       ),
     );
