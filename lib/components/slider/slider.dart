@@ -3,7 +3,8 @@ library slider;
 import 'package:flutter/gestures.dart' show PointerScrollEvent;
 import 'package:flutter/material.dart' hide Slider;
 import 'dart:math' show pi;
-import 'dart:developer' show log;
+// import 'dart:developer' show log;
+import 'dart:async';
 
 part 'slider_state.dart';
 part 'slide_transition.dart';

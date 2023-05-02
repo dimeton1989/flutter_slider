@@ -3,43 +3,47 @@ part of slider;
 class SliderState extends State<Slider> {
   int index = 0;
   AxisDirection axisDirection = AxisDirection.right;
-  bool isPlaying = false;
+  bool isScrolling = false;
+  Timer? timer;
 
   onPointerSignal(event) {
-    if (event is! PointerScrollEvent) return;
-    if (isPlaying) return;
     if (event.scrollDelta.dx < 0) {
+      axisDirection = AxisDirection.left;
       if (index <= 0) return;
       return setState(() {
-        isPlaying = true;
         index -= 1;
-        axisDirection = AxisDirection.left;
       });
     }
+
     if (event.scrollDelta.dx > 0) {
+      axisDirection = AxisDirection.right;
       if (index >= widget.slides.length - 1) return;
       return setState(() {
-        isPlaying = true;
         index += 1;
-        axisDirection = AxisDirection.right;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // https://stackoverflow.com/questions/64985580/flutter-web-gesturedetector-detect-mouse-wheel-events
     return Listener(
-      onPointerSignal: onPointerSignal,
+      onPointerSignal: (event) {
+        if (event is PointerScrollEvent) {
+          if (isScrolling) return;
+          isScrolling = true;
+          onPointerSignal(event);
+          return;
+        }
+      },
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
         transitionBuilder: (Widget child, Animation<double> listenable) {
-          // https://stackoverflow.com/questions/64985580/flutter-web-gesturedetector-detect-mouse-wheel-events
           listenable.addStatusListener((status) {
-            if (![
-              AnimationStatus.dismissed,
-              AnimationStatus.completed,
-            ].contains(status)) return;
-            isPlaying = false; // 不知道為啥這邊包 setState 會錯
+            if (!isScrolling) return;
+            if (status != AnimationStatus.completed) return;
+            if (timer?.isActive ?? false) return timer!.cancel();
+            timer = Timer(const Duration(milliseconds: 1200), () => isScrolling = false);
           });
           return SlideTransition(
             axisDirection: axisDirection,
