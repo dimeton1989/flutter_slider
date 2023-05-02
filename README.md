@@ -1,16 +1,4 @@
-# animation
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 心得
+1. 最重要的是去改變 AnimationSwitcher child 的 key 值，誘發 TransitionBuilder 重 build。
+2. 預設的 Transition 是淡入淡出，我們可以透過指定 transitionBuilder，將 Transition 換成其他 Transition 或者客製的 Transition。
+3. 整個過程我們可以指定動畫長度即可，不必另外產一個 Animation 物件。
