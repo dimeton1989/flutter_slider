@@ -32,7 +32,7 @@ class SliderState extends State<Slider> {
         return;
       },
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 400),
         transitionBuilder: (Widget child, Animation<double> listenable) {
           listenable.addStatusListener((status) {
             if (!isScrolling) return;
