@@ -13,8 +13,11 @@ class SliderState extends State<Slider> {
           duration: const Duration(milliseconds: 500),
           transitionBuilder: (Widget child, Animation<double> listenable) {
             listenable.addStatusListener((status) {
-              if (status == AnimationStatus.completed) isPlaying = false;
-              if (status == AnimationStatus.dismissed) isPlaying = false;
+              if (![
+                AnimationStatus.completed,
+                AnimationStatus.dismissed,
+              ].contains(status)) return;
+              isPlaying = false;
             });
             return SlideTransition(
               direction: direction,
