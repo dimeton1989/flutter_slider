@@ -4,43 +4,35 @@ class SliderState extends State<Slider> {
   int index = 0;
   AxisDirection direction = AxisDirection.right;
   bool isPlaying = false;
-  double left = 0;
-  double top = 0;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanDown: (DragDownDetails event) => setState(() {
-        left = 0;
-        top = 0;
-      }),
-      onPanUpdate: (DragUpdateDetails event) => setState(() {
-        left += event.delta.dx;
-        top += event.delta.dy;
-      }),
-      onPanEnd: (DragEndDetails event) => setState(() {
-        // event.velocity;
-        if (left < 0) {
+    return Listener(
+      onPointerSignal: (event) {
+        if (event is! PointerScrollEvent) return;
+        if (isPlaying) return;
+        log(event.toString(), level: 1000);
+        if (event.scrollDelta.dx < 0) {
           if (index <= 0) return;
           return setState(() {
+            isPlaying = true;
             index -= 1;
             direction = AxisDirection.left;
-            isPlaying = true;
           });
         }
-
-        if (left > 0) {
+        if (event.scrollDelta.dx > 0) {
           if (index >= widget.slides.length - 1) return;
           return setState(() {
+            isPlaying = true;
             index += 1;
             direction = AxisDirection.right;
-            isPlaying = true;
           });
         }
-      }),
+      },
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),
         transitionBuilder: (Widget child, Animation<double> listenable) {
+          // https://stackoverflow.com/questions/64985580/flutter-web-gesturedetector-detect-mouse-wheel-events
           listenable.addStatusListener((status) {
             if (![
               AnimationStatus.completed,
