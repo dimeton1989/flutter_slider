@@ -8,6 +8,7 @@ class SliderState extends State<Slider> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 500),
