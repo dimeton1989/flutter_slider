@@ -7,20 +7,25 @@ class SliderState extends State<Slider> {
   Timer? timer;
 
   onPointerSignal(event) {
+    if (event is! PointerScrollEvent) return;
     if (isScrolling) return;
     if (event.scrollDelta.dx == 0) return;
     if (event.scrollDelta.dx < 0) {
-      isScrolling = true;
       axisDirection = AxisDirection.left;
       if (index <= 0) return;
-      return setState(() => index -= 1);
+      return setState(() {
+        isScrolling = true;
+        index -= 1;
+      });
     }
 
     if (event.scrollDelta.dx > 0) {
-      isScrolling = true;
       axisDirection = AxisDirection.right;
       if (index >= widget.slides.length - 1) return;
-      return setState(() => index += 1);
+      return setState(() {
+        isScrolling = true;
+        index += 1;
+      });
     }
   }
 
@@ -28,11 +33,7 @@ class SliderState extends State<Slider> {
   Widget build(BuildContext context) {
     // https://stackoverflow.com/questions/64985580/flutter-web-gesturedetector-detect-mouse-wheel-events
     return Listener(
-      onPointerSignal: (event) {
-        if (event is! PointerScrollEvent) return;
-        onPointerSignal(event);
-        return;
-      },
+      onPointerSignal: isScrolling ? null : onPointerSignal,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 400),
         transitionBuilder: (Widget child, Animation<double> listenable) {
@@ -40,7 +41,7 @@ class SliderState extends State<Slider> {
             if (!isScrolling) return;
             if (status != AnimationStatus.completed) return;
             if (timer?.isActive ?? false) return timer!.cancel();
-            timer = Timer(const Duration(milliseconds: 1200), () => isScrolling = false);
+            timer = Timer(const Duration(milliseconds: 1000), () => setState(() => isScrolling = false));
           });
           return SlideTransition(
             axisDirection: axisDirection,
